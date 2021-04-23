@@ -6,8 +6,20 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-	<security:http>
-		<security:form-login />
+	<security:http auto-config="true" use-expressions="true">
+	
+		<security:intercept-url pattern="/*" access="hasRole('ROLE_MEMBER')"/>
+	
+		<security:form-login 
+			login-page="/users/login"
+			/>
+		
+		<security:logout
+			logout-url="/users/logout"
+			logout-success-url="/"
+			/>	
+		
+		<security:access-denied-handler error-page="/errors/accessError"/>
 	</security:http>
 	
 	<security:authentication-manager>

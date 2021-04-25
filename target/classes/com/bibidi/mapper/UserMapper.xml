@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bibidi.mapper.UserMapper">
+
+	<resultMap type="com.bibidi.domain.UserVO" id="userMap">
+		<id property="userNumber" column="user_number"/>
+		<result property="userNumber" column="user_number"/>
+		<result property="userId" column="user_id"/>
+		<result property="userPassword" column="user_password"/>
+		<result property="userEmail" column="user_email"/>
+		<result property="userNickname" column="user_nickname"/>
+		<result property="userPicture" column="user_picture"/>
+		<result property="userActivityPoint" column="user_activity_point"/>
+		<result property="dateUserCreated" column="date_user_created"/>
+		<result property="dateUserEdited" column="date_user_edited"/>
+		<result property="userEnabled" column="user_enabled"/>
+		<collection property="roleList" resultMap="roleMap"/>
+	</resultMap>
+	
+	<resultMap type="com.bibidi.domain.RoleVO" id="roleMap">
+		<id property="roleNumber" column="role_number"/>
+		<result property="roleNumber" column="role_number"/>
+		<result property="roleName" column="role_name"/>
+	</resultMap>
+	
+	<select id="findByUserId" resultMap="userMap">
+		SELECT
+			users.*, roles.*
+		FROM users
+			LEFT OUTER JOIN users_roles ON users.user_number = users_roles.user_number
+			LEFT OUTER JOIN roles ON users_roles.role_number = roles.role_number
+		WHERE user_id = #{userId}
+	</select>
+</mapper>

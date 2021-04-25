@@ -51,10 +51,10 @@
                         <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="userid" name="username" type="text" autofocus>
+                                    <input class="form-control" placeholder="ID" name="userId" type="text" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                    <input class="form-control" placeholder="Password" name="userPassword" type="password" value="">
                                 </div>
                                 <div class="checkbox">
                                     <label>

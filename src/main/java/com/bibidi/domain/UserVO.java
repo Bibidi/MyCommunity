@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class UserVO {
+	private Long userNumber;
 	private String userId;
 	private String userPassword;
 	private String userEmail;
@@ -20,5 +21,5 @@ public class UserVO {
 	
 	private Boolean userEnabled;
 	
-	private List<String> roleList;
+	private List<RoleVO> roleList;
 }

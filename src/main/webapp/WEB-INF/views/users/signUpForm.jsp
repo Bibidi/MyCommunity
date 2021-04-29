@@ -1,24 +1,27 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <html>
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Login Form</title>
+    <title>SB Admin 2 - Bootstrap Admin Theme</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
     <link href="/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="/resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="/resources/dist/css/sb-admin-2.css" rel="stylesheet">
@@ -36,33 +39,45 @@
 </head>
 
 <body>
+    <div id="wrapper">
+    
+    	<%@include file="../includes/navigation.jsp" %>
 
-    <div class="container">
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">회원가입</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+           
+            
+            <div class="container">
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="col-md-6 col-md-offset-3">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Sign In</h3>
+                        <h3 class="panel-title">Sign Up</h3>
                     </div>
                     <div class="panel-body">
-                    	<h5><c:out value="${error}"/></h5>
-                    	<h5><c:out value="${logout}"/></h5>
                     	
                         <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="ID" name="userId" type="text" autofocus>
+                                    <input class="form-control" placeholder="아이디 (6~12자 이내, 영문/숫자 외 사용 불가)" maxlength="12" name="userId" type="text" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="userPassword" type="password" value="">
+                                    <input class="form-control" placeholder="비밀번호 (8자 이상, 영문/숫자/!, @, # 사용 가능)" maxlength="30" name="userPassword" type="password">
                                 </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember-me" type="checkbox" value="Remember Me">Remember Me
-                                    </label>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="이메일 (255자 이내)" maxlength="255" name="userEmail" type="text">
                                 </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="닉네임 (최대 8글자 한글 1자, 영문/숫자는 0.5자)" maxlength="16" name="userNickname" type="text">
+                                </div>
+                                
                                 <!-- Change this to a button or input when using this as a form -->
-                                <button class="btn btn-lg btn-success btn-block" formaction="/login" formmethod="post">Login</button>
+                                <button class="btn btn-lg btn-success btn-block" formaction="/users/signup" formmethod="post">Sign Up</button>
                             </fieldset>
                             <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token}" />
                         </form>
@@ -71,8 +86,14 @@
             </div>
         </div>
     </div>
+            
+        </div>
+        <!-- /#page-wrapper -->
 
-    <!-- jQuery -->
+    </div>
+    <!-- /#wrapper -->
+
+	<!-- jQuery -->
     <script src="/resources/vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
@@ -81,8 +102,15 @@
     <!-- Metis Menu Plugin JavaScript -->
     <script src="/resources/vendor/metisMenu/metisMenu.min.js"></script>
 
+    <!-- DataTables JavaScript -->
+    <script src="/resources/vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="/resources/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="/resources/vendor/datatables-responsive/dataTables.responsive.js"></script>
+
     <!-- Custom Theme JavaScript -->
     <script src="/resources/dist/js/sb-admin-2.js"></script>
 
+
 </body>
+
 </html>

@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		
 		log.warn("Load user by userId : " + userId);
 		
-		UserVO user = userMapper.findByUserId(userId);
+		UserVO user = userMapper.readUserByUserId(userId);
 		
 		log.warn("queried by user mapper: " + user);
 		

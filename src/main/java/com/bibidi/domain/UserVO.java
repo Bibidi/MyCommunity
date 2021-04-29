@@ -7,19 +7,19 @@ import lombok.Data;
 
 @Data
 public class UserVO {
-	private Long userNumber;
-	private String userId;
-	private String userPassword;
+	private Long number;
+	private String id;
+	private String password;
 	private String userEmail;
 	
-	private String userNickname;
-	private String userPicture;
-	private Long userActivityPoint;
+	private String nickname;
+	private String picture;
+	private Long activityScore;
 	
-	private Date dateUserCreated;
-	private Date dateUserEdited;
+	private Date dateRegistered;
+	private Date dateModified;
 	
-	private Boolean userEnabled;
+	private Boolean enabled;
 	
-	private List<RoleVO> roleList;
+	private List<RoleVO> roles;
 }

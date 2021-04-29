@@ -3,27 +3,35 @@
 <mapper namespace="com.bibidi.mapper.UserMapper">
 
 	<resultMap type="com.bibidi.domain.UserVO" id="userMap">
-		<id property="userNumber" column="user_number"/>
-		<result property="userNumber" column="user_number"/>
-		<result property="userId" column="user_id"/>
-		<result property="userPassword" column="user_password"/>
+		<id property="number" column="user_number"/>
+		<result property="number" column="user_number"/>
+		<result property="id" column="user_id"/>
+		<result property="password" column="user_password"/>
 		<result property="userEmail" column="user_email"/>
-		<result property="userNickname" column="user_nickname"/>
-		<result property="userPicture" column="user_picture"/>
-		<result property="userActivityPoint" column="user_activity_point"/>
-		<result property="dateUserCreated" column="date_user_created"/>
-		<result property="dateUserEdited" column="date_user_edited"/>
-		<result property="userEnabled" column="user_enabled"/>
-		<collection property="roleList" resultMap="roleMap"/>
+		<result property="nickname" column="user_nickname"/>
+		<result property="picture" column="user_picture"/>
+		<result property="activityScore" column="user_activity_score"/>
+		<result property="dateRegistered" column="date_user_created"/>
+		<result property="dateModified" column="date_user_modified"/>
+		<result property="enabled" column="user_enabled"/>
+		<collection property="roles" resultMap="roleMap"/>
 	</resultMap>
 	
 	<resultMap type="com.bibidi.domain.RoleVO" id="roleMap">
-		<id property="roleNumber" column="role_number"/>
-		<result property="roleNumber" column="role_number"/>
-		<result property="roleName" column="role_name"/>
+		<id property="number" column="role_number"/>
+		<result property="number" column="role_number"/>
+		<result property="name" column="role_name"/>
 	</resultMap>
 	
-	<select id="findByUserId" resultMap="userMap">
+	<insert id="insertUser">
+		INSERT INTO users
+			(user_number, user_id, user_password, user_email, user_nickname, user_activity_score)
+		VALUES
+			(seq_user.nextval, #{id}, #{password}, #{userEmail}, #{nickname}, #{activityScore})
+		
+	</insert>
+	
+	<select id="readUserByUserId" resultMap="userMap">
 		SELECT
 			users.*, roles.*
 		FROM users
@@ -31,4 +39,21 @@
 			LEFT OUTER JOIN roles ON users_roles.role_number = roles.role_number
 		WHERE user_id = #{userId}
 	</select>
+	
+	<update id="increaseUserActivityScoreByUserId">
+		UPDATE users
+		SET user_activity_score = user_activity_score + #{points}
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="decreaseUserActivityScoreByUserId">
+		UPDATE users
+		SET user_activity_score = user_activity_score - #{points}
+		WHERE user_id = #{userId}
+	</update>
+	
+	<delete id="deleteUserByUserId">
+		DELETE FROM users
+		WHERE user_id = #{userId}
+	</delete>
 </mapper>

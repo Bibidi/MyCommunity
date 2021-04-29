@@ -23,8 +23,8 @@ public class SecurityUser extends User {
 	}
 	
 	public SecurityUser(UserVO userVO) {
-		super(userVO.getUserId(), userVO.getUserPassword(), userVO.getRoleList().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+		super(userVO.getId(), userVO.getPassword(), userVO.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getName()))
 				.collect(Collectors.toList()));
 		
 		this.user = userVO;

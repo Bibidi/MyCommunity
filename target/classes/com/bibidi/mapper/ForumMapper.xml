@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bibidi.mapper.ForumMapper">
+	
+	<resultMap type="com.bibidi.domain.ForumVO" id="forumMap">
+		<id property="number" column="forum_number"/>
+		<result property="number" column="forum_number" />
+		<result property="name" column="forum_name" />
+		<result property="description" column="forum_description" />
+		<result property="slug" column="forum_slug" />
+		<result property="dateRegistered" column="date_forum_registered" />
+	</resultMap>
+	
+	<insert id="insertForum">
+		INSERT INTO forums
+			(forum_number, forum_name, forum_description, forum_slug)
+		VALUES
+			(seq_forum.nextval, #{name}, #{description}, #{slug})
+	</insert>
+	
+	<select id="readForumByForumNumber" resultMap="forumMap">
+		SELECT * FROM forums WHERE forum_number = #{forumNumber}
+	</select>
+	
+	<update id="updateForum">
+		UPDATE forums
+		SET forum_name = #{name}, forum_description = #{description}, forum_slug = #{slug}
+		WHERE forum_number = #{number}
+	</update>
+	
+	<delete id="deleteForumByForumNumber">
+		DELETE FROM forums
+		WHERE forum_number = #{forumNumber}
+	</delete>
+	
+</mapper>

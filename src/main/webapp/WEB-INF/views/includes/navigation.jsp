@@ -10,7 +10,7 @@
 		<a class="navbar-brand" href="/">Bibidi</a>
 		<sec:authorize access="isAuthenticated()">
 			<sec:authorize access="hasRole('ROLE_ADMIN')">
-				<a class="navbar-brand" href="/"> ADMIN</a>
+				<a class="navbar-brand" href="/admin/"> ADMIN</a>
 			</sec:authorize>
 		</sec:authorize>
 		

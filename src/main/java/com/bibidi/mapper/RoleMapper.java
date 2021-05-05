@@ -6,7 +6,7 @@ public interface RoleMapper {
 
 	public int insertRole(RoleVO role);
 	
-	public RoleVO readRoleByNumber(Long roleNumber);
+	public RoleVO readRoleByRoleNumber(Long roleNumber);
 	
 	public int updateRole(RoleVO role);
 	

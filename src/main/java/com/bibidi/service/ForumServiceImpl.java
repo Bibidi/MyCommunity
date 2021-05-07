@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bibidi.domain.ForumVO;
+import com.bibidi.domain.RoleVO;
 import com.bibidi.mapper.ForumMapper;
+import com.bibidi.mapper.RoleMapper;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -14,13 +16,29 @@ import lombok.extern.log4j.Log4j;
 public class ForumServiceImpl implements ForumService {
 	
 	@Setter(onMethod_ = @Autowired)
-	ForumMapper forumMapper;
+	private ForumMapper forumMapper;
+	
+	@Setter(onMethod_ = @Autowired)
+	private RoleMapper roleMapper;
 	
 	@Override
 	public int registerForum(ForumVO forum) {
 
 		log.info("register forum.........");
-		return forumMapper.insertForum(forum);
+		
+		int result = forumMapper.insertForum(forum);
+		
+		// 해당 게시판과 관련된 권한 추가
+		if (result > 0) {
+			RoleVO role = new RoleVO();
+			role.setName("ROLE_ADMIN_" + forum.getSlug().toUpperCase());
+			result *= roleMapper.insertRole(role);
+			
+			role.setName("ROLE_MANAGER_" + forum.getSlug().toUpperCase());
+			result *= roleMapper.insertRole(role);
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -41,7 +59,20 @@ public class ForumServiceImpl implements ForumService {
 	public int deleteForumByForumNumber(Long forumNumber) {
 
 		log.info("delete forum by forum number.............");
-		return forumMapper.deleteForumByForumNumber(forumNumber);
+		
+		int result = forumMapper.deleteForumByForumNumber(forumNumber);
+		
+		// 해당 게시판과 관련된 권한 삭제
+		if (result > 0) {
+			String slug = forumMapper
+					.readForumByForumNumber(forumNumber)
+					.getSlug()
+					.toUpperCase();
+			
+			result *= roleMapper.deleteRoleByRoleName("ROLE_ADMIN_" + slug);
+			result *= roleMapper.deleteRoleByRoleName("ROLE_MANAGER_" + slug);
+		}
+		return result;
 	}
 	
 }

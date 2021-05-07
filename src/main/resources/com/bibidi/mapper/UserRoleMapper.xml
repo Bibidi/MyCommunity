@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bibidi.mapper.UserRoleMapper">
+	
+	<insert id="insertUserRole">
+		INSERT INTO users_roles VALUES
+		(
+			(SELECT user_number FROM users WHERE user_id = #{userId}),
+			(SELECT role_number FROM roles WHERE role_name = #{roleName})
+		)
+	</insert>
+	
+	<delete id="deleteUserRole">
+		DELETE FROM users_roles WHERE 
+		(
+			user_number = (SELECT user_number FROM users WHERE user_id = #{userId})
+			AND role_number = (SELECT role_number FROM roles WHERE role_name = #{roleName})
+		)
+	</delete>
+</mapper>

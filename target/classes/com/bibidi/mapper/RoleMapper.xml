@@ -8,6 +8,20 @@
 		<result property="name" column="role_name" />
 	</resultMap>
 	
+	<insert id="insertRole">
+		INSERT INTO roles
+		VALUES (seq_role.nextval, #{name})
+	</insert>
 	
+	<select id="readRoleByRoleName" resultMap="roleMap">
+		SELECT *
+		FROM roles
+		WHERE role_name = #{roleName}
+	</select>
+	
+	<delete id="deleteRoleByRoleName">
+		DELETE FROM roles
+		WHERE role_name = #{roleName}
+	</delete>
 </mapper>
 

@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bibidi.domain.ForumVO;
+import com.bibidi.mapper.RoleMapper;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -20,6 +21,9 @@ public class ForumServiceTests {
 
 	@Setter(onMethod_ = @Autowired)
 	private ForumService forumService;
+	
+	@Setter
+	private RoleMapper roleMapper;
 	
 	@Test
 	public void testExist() {
@@ -37,6 +41,9 @@ public class ForumServiceTests {
 		
 		log.info("THE NUMBER OF REGISTERED FORUMS : "
 				+ forumService.registerForum(forum));
+		
+		log.info(roleMapper.readRoleByRoleName("ROLE_ADMIN_" + forum.getSlug().toUpperCase()));
+		log.info(roleMapper.readRoleByRoleName("ROLE_MANAGER_" + forum.getSlug().toUpperCase()));
 	}
 	
 	@Test
@@ -59,7 +66,6 @@ public class ForumServiceTests {
 	
 	@Test
 	public void testDeleteForumByForumNumber() {
-		
 		log.info("THE NUMBER OF DELETED FORUMS : "
 				+ forumService.deleteForumByForumNumber(0L));
 	}

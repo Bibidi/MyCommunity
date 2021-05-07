@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bibidi.domain.UserRoleVO;
 import com.bibidi.domain.UserVO;
 import com.bibidi.mapper.UserMapper;
+import com.bibidi.mapper.UserRoleMapper;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -16,15 +18,27 @@ public class UserServiceImpl implements UserService {
 	
 	@Setter(onMethod_ = @Autowired)
 	private UserMapper userMapper;
+	
+	@Setter(onMethod_ = @Autowired)
+	private UserRoleMapper userRoleMapper;
 
 	@Override
 	public int registerUser(UserVO user) {
 		
 		log.info("registerUser.........");
 		
-		int countUserRegistered = userMapper.insertUser(user);
+		int result = userMapper.insertUser(user);
 		
-		return countUserRegistered;
+		// 해당 사용자에게 사용자 권한 부여
+		if (result > 0) {
+			UserRoleVO userRole = new UserRoleVO();
+			userRole.setUserId(user.getId());
+			userRole.setRoleName("ROLE_USER");
+			
+			result = userRoleMapper.insertUserRole(userRole);
+		}
+		
+		return result;
 	}
 
 	@Override

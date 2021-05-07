@@ -10,6 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bibidi.domain.UserVO;
+import com.bibidi.mapper.RoleMapper;
+import com.bibidi.mapper.UserRoleMapper;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -23,6 +25,9 @@ public class UserServiceTests {
 
 	@Setter(onMethod_ = @Autowired)
 	private UserService userService;
+	
+	@Setter(onMethod_ = @Autowired)
+	private UserRoleMapper UserRoleMapper;
 	
 	@Setter(onMethod_ = @Autowired)
 	private PasswordEncoder passwordEncoder;
@@ -47,6 +52,8 @@ public class UserServiceTests {
 		
 		log.info("NUMBER OF REGISTERED USERS : "
 				+ userService.registerUser(user));
+		
+		log.info(userService.getUserByUserId("tid"));
 	}
 	
 	@Test

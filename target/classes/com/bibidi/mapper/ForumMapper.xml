@@ -22,6 +22,10 @@
 		SELECT * FROM forums WHERE forum_number = #{forumNumber}
 	</select>
 	
+	<select id="readForumByForumSlug" resultMap="forumMap">
+		SELECT * FROM forums WHERE forum_slug = #{forumSlug}
+	</select>
+	
 	<update id="updateForum">
 		UPDATE forums
 		SET forum_name = #{name}, forum_description = #{description}, forum_slug = #{slug}

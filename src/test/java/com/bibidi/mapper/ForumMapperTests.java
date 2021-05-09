@@ -37,6 +37,11 @@ public class ForumMapperTests {
 	}
 	
 	@Test
+	public void testReadForumByForumSlug() {
+		log.info(forumMapper.readForumByForumSlug("notice"));
+	}
+	
+	@Test
 	public void testUpdateForum() {
 		
 		ForumVO forum = new ForumVO();

@@ -8,6 +8,8 @@ public interface ForumMapper {
 	
 	public ForumVO readForumByForumNumber(Long forumNumber);
 	
+	public ForumVO readForumByForumSlug(String forumSlug);
+	
 	public int updateForum(ForumVO forum);
 	
 	public int deleteForumByForumNumber(Long forumNumber);

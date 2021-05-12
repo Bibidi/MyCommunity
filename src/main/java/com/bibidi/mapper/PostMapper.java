@@ -17,5 +17,7 @@ public interface PostMapper {
 	
 	public int updatePost(PostVO post);
 	
+	public int increasePostViewsByPostNumber(Long postNumber);
+	
 	public int deletePostByPostNumber(Long postNumber);
 }

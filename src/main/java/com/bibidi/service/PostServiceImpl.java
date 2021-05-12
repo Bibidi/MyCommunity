@@ -9,6 +9,7 @@ import com.bibidi.domain.PageVO;
 import com.bibidi.domain.PostVO;
 import com.bibidi.mapper.ForumMapper;
 import com.bibidi.mapper.PostMapper;
+import com.bibidi.mapper.UserMapper;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -23,18 +24,30 @@ public class PostServiceImpl implements PostService{
 	@Setter(onMethod_ = @Autowired)
 	private ForumMapper ForumMapper;
 	
+	@Setter(onMethod_ = @Autowired)
+	private UserMapper userMapper;
+	
+	private static final Long SCORE = 30L;
 	
 	@Override
 	public int registerPost(PostVO post) {
 		
 		log.info("register Post.............");
-		return postMapper.insertPost(post);
+		
+		int result = postMapper.insertPost(post);
+		if (result > 0) {
+			result = userMapper.increaseUserActivityScoreByUserNickname(post.getWriter(), SCORE);
+		}
+		
+		return result;
 	}
 
 	@Override
 	public PostVO getPostByPostNumber(Long postNumber) {
 		
 		log.info("get post by post number .............");
+		
+		postMapper.increasePostViewsByPostNumber(postNumber);
 		return postMapper.readPostByPostNumber(postNumber);
 	}
 

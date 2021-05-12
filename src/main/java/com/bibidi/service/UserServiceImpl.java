@@ -49,17 +49,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int increaseUserActivityScoreByUserId(String userId, Long points) {
+	public int increaseUserActivityScoreByUserNickname(String userNickname, Long points) {
 		
 		log.info("increaseUserActivityScoreByUserId...............");
-		return userMapper.increaseUserActivityScoreByUserId(userId, points);
+		return userMapper.increaseUserActivityScoreByUserNickname(userNickname, points);
 	}
 
 	@Override
-	public int decreaseUserActivityScoreByUserId(String userId, Long points) {
+	public int decreaseUserActivityScoreByUserNickname(String userNickname, Long points) {
 		
 		log.info("decreaseUserActivityScoreByUserId.................");
-		return userMapper.decreaseUserActivityScoreByUserId(userId, points);
+		return userMapper.decreaseUserActivityScoreByUserNickname(userNickname, points);
 	}
 
 	@Override

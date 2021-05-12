@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bibidi.mapper.CommentMapper">
+	
+	<resultMap type="com.bibidi.domain.CommentVO" id="commentMap">
+		<id property="number" column="comment_number"/>
+		<result property="number" column="comment_number" />
+		<result property="postNumber" column="post_nubmer" />
+		<result property="parentNumber" column="comment_parent_number" />
+		<result property="content" column="comment_content" />
+		<result property="writer" column="user_nickname" />
+		<result property="dateCommented" column="date_commented" />
+		<result property="dateModified" column="date_comment_modified" />
+		<result property="isDeleted" column="comment_is_deleted" />
+	</resultMap>
+	
+	<insert id="insertComment">
+		INSERT INTO comments
+			(comment_number, post_number, comment_parent_number, comment_content, comment_writer)
+		VALUES
+			(#{number}, #{postNumber}, #{parentNumber}, #{content},
+			(SELECT user_number FROM users WHERE user_nickname = #{comment_writer}))
+	</insert>
+	
+	<select id="readCommentsByPostNubmer" resultMap="commentMap">
+		<![CDATA[
+			SELECT * FROM 
+				(
+					SELECT * FROM comments
+					WHERE post_nubmer = #{postNumber}
+					ORDER BY comment_parent_number DESC, comment_number ASC
+				)
+			WHERE (#{from} <= ROWNUM AND ROWNUM <= #{to})
+			ORDER BY comment_parent_number ASC, comment_number ASC
+		]]>
+	</select>
+	
+	<update id="updateComment">
+		UPDATE comments SET
+			(
+				comment_content = #{content},
+				date_comment_modified = sysdate
+			)
+	</update>
+	
+	<delete id="deleteCommentByCommentNumber">
+		DELETE FROM comments
+		WHERE comment_number = #{commentNumber}
+	</delete>
+</mapper>

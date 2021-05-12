@@ -28,7 +28,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/forums/registration", method=RequestMethod.GET)
-	public String getForumForm() {
+	public String getForumRegistrationForm() {
 		
 		log.info("get forum form");
 		return "/admin/forumForm";
@@ -44,7 +44,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/forums", method=RequestMethod.POST)
-	public String postForumForm(String forumName, String forumDescription, String forumSlug) {
+	public String postForumRegistrationForm(String forumName, String forumDescription, String forumSlug) {
 		
 		log.info("post forum form");
 		

@@ -47,6 +47,13 @@ public class ForumServiceImpl implements ForumService {
 		log.info("get forum by forum number.........");
 		return forumMapper.readForumByForumNumber(forumNumber);
 	}
+	
+	@Override
+	public ForumVO getForumByForumSlug(String forumSlug) {
+		
+		log.info("get forum by forum slug............");
+		return forumMapper.readForumByForumSlug(forumSlug);
+	}
 
 	@Override
 	public int modifyForum(ForumVO forum) {

@@ -10,9 +10,9 @@ public interface UserMapper {
 	
 	public UserVO readUserByUserId(String userId);
 	
-	public int increaseUserActivityScoreByUserId(@Param("userId") String userId, @Param("points") Long points);
+	public int increaseUserActivityScoreByUserNickname(@Param("userNickname") String userNickname, @Param("points") Long points);
 	
-	public int decreaseUserActivityScoreByUserId(@Param("userId") String userId, @Param("points") Long points);
+	public int decreaseUserActivityScoreByUserNickname(@Param("userNickname") String userNickname, @Param("points") Long points);
 	
 	public int deleteUserByUserId(String userId);
 }

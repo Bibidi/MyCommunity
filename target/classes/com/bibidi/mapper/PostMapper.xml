@@ -49,6 +49,12 @@
 		WHERE post_number = #{number}
 	</update>
 	
+	<update id="increasePostViewsByPostNumber">
+		UPDATE posts SET
+			post_views_count = post_views_count + 1
+		WHERE post_number = #{postNumber}
+	</update>
+	
 	<delete id="deletePostByPostNumber">
 		DELETE FROM posts
 		WHERE post_number = #{postNumber}

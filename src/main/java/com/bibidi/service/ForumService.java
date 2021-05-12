@@ -8,6 +8,8 @@ public interface ForumService {
 	
 	public ForumVO getForumByForumNumber(Long forumNumber);
 	
+	public ForumVO getForumByForumSlug(String forumSlug);
+	
 	public int modifyForum(ForumVO forum);
 	
 	public int deleteForumByForumNumber(Long forumNumber);

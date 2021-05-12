@@ -8,9 +8,9 @@ public interface UserService {
 	
 	public UserVO getUserByUserId(String userId);
 	
-	public int increaseUserActivityScoreByUserId(String userId, Long points);
+	public int increaseUserActivityScoreByUserNickname(String userNickname, Long points);
 	
-	public int decreaseUserActivityScoreByUserId(String userId, Long points);
+	public int decreaseUserActivityScoreByUserNickname(String userNickname, Long points);
 	
 	public int deleteUserByUserId(String userId);
 }

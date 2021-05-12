@@ -40,16 +40,16 @@
 		WHERE user_id = #{userId}
 	</select>
 	
-	<update id="increaseUserActivityScoreByUserId">
+	<update id="increaseUserActivityScoreByUserNickname">
 		UPDATE users
 		SET user_activity_score = user_activity_score + #{points}
-		WHERE user_id = #{userId}
+		WHERE user_nickname = #{userNickname}
 	</update>
 
-	<update id="decreaseUserActivityScoreByUserId">
+	<update id="decreaseUserActivityScoreByUserNickname">
 		UPDATE users
 		SET user_activity_score = user_activity_score - #{points}
-		WHERE user_id = #{userId}
+		WHERE user_nickname = #{userNickname}
 	</update>
 	
 	<delete id="deleteUserByUserId">

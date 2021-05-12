@@ -65,15 +65,15 @@ public class UserServiceTests {
 	}
 	
 	@Test
-	public void testIncreaseUserActivityScoreByUserId() {
+	public void testIncreaseUserActivityScoreByUserNickname() {
 		log.info("NUMBER OF USERS WITH INCREASED ACTIVITY SCORE : "
-				+ userService.increaseUserActivityScoreByUserId("bibidi", 100L));
+				+ userService.increaseUserActivityScoreByUserNickname("bibidi", 100L));
 	}
 	
 	@Test
-	public void testDecreaseUserActivityScoreByUserId() {
+	public void testDecreaseUserActivityScoreByUserNickname() {
 		log.info("NUMBER OF USERS WITH INCREASED ACTIVITY SCORE : "
-				+ userService.decreaseUserActivityScoreByUserId("bibidi", 100L));
+				+ userService.decreaseUserActivityScoreByUserNickname("bibidi", 10L));
 	}
 	
 	@Test

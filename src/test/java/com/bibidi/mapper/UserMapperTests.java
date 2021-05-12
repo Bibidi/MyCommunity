@@ -48,15 +48,15 @@ public class UserMapperTests {
 	}
 	
 	@Test
-	public void testIncreaseUserActivityScoreByUserId() {
+	public void testIncreaseUserActivityScoreByUserNickname() {
 		log.info("NUMBER OF USERS WITH INCREASED USERS : " 
-				+ userMapper.increaseUserActivityScoreByUserId("bibidi", 100L));
+				+ userMapper.increaseUserActivityScoreByUserNickname("bibidi", 100L));
 	}
 	
 	@Test
-	public void testDecreaseUserActivityScoreByUserId() {
+	public void testDecreaseUserActivityScoreByUserNickname() {
 		log.info("NUMBER OF USERS WITH INCREASED USERS : " 
-				+ userMapper.decreaseUserActivityScoreByUserId("bibidi", 100L));
+				+ userMapper.decreaseUserActivityScoreByUserNickname("bibidi", 10L));
 	}
 	
 	@Test

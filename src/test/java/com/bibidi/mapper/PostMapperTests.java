@@ -59,6 +59,12 @@ public class PostMapperTests {
 	}
 	
 	@Test
+	public void testIncreasePostViewsByPostNumber() {
+		Long postNumber = 1L;
+		log.info("THE NUMBER OF POSTS WHOSE VIEWS INCREASED : " + postMapper.increasePostViewsByPostNumber(postNumber));
+	}
+	
+	@Test
 	public void testDeletePostByPostNumber() {
 		log.info("THE NUMBER OF DELETED POSTS : " + postMapper.deletePostByPostNumber(2L));
 	}

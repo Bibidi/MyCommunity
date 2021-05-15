@@ -23,7 +23,9 @@
 	</insert>
 	
 	<select id="readPostByPostNumber" resultMap="postMap">
-		SELECT * FROM posts
+		SELECT post_number, forum_number, post_title, post_content, user_nickname, date_posted, date_post_modified, post_views_count
+		FROM posts
+		INNER JOIN users ON user_number = post_writer
 		WHERE post_number = #{postNumber}
 	</select>
 	

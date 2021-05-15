@@ -48,8 +48,13 @@ public class PostController {
 		
 		log.info("PostController get post.............");
 		
-		model.addAttribute("post", postService.getPostByPostNumber(postNumber));
+		PageVO page = new PageVO();
+		page.setNumber(1L);
+		page.setSize(10L);
+		
+		model.addAttribute("selectedPost", postService.getPostByPostNumber(postNumber));
 		model.addAttribute("forum", forumService.getForumByForumSlug(forumSlug));
+		model.addAttribute("posts", postService.getPostsByForumSlug(forumSlug, page));
 		
 		return "posts/postPage";
 	}

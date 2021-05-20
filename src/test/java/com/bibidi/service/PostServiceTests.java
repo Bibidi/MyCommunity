@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.bibidi.domain.PageVO;
 import com.bibidi.domain.PostVO;
+import com.bibidi.domain.SearchCriteria;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -51,12 +51,12 @@ public class PostServiceTests {
 	public void testGetPostsByForumSlug() {
 		
 		String forumSlug = "notice";
-		PageVO page = new PageVO();
-		page.setNumber(1L);
-		page.setSize(20L);
+		SearchCriteria searchCriteria = new SearchCriteria(2L, 20L);
+		
+		log.info("searchCriteria : " + searchCriteria);
 		
 		postService
-			.getPostsByForumSlug(forumSlug, page)
+			.getPostsByForumSlug(forumSlug, searchCriteria)
 			.forEach(post -> log.info(post));
 	}
 	

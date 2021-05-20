@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bibidi.domain.PageVO;
+import com.bibidi.domain.SearchCriteria;
+import com.bibidi.domain.ForumVO;
+import com.bibidi.domain.Page;
 import com.bibidi.domain.PostVO;
 import com.bibidi.service.ForumService;
 import com.bibidi.service.PostService;
@@ -29,43 +31,56 @@ public class PostController {
 	
 
 	@RequestMapping(value="/{forumSlug}", method=RequestMethod.GET)
-	public String getPosts(@PathVariable(name = "forumSlug") String forumSlug, Model model) {
+	public String getPosts(@PathVariable(name = "forumSlug") String forumSlug, SearchCriteria searchCriteria, Model model) {
 		
 		log.info("PostController get posts.............");
 		
-		PageVO page = new PageVO();
-		page.setNumber(1L);
-		page.setSize(10L);
-		
-		model.addAttribute("posts", postService.getPostsByForumSlug(forumSlug, page));
-		model.addAttribute("forum", forumService.getForumByForumSlug(forumSlug));
+		ForumVO forum = forumService.getForumByForumSlug(forumSlug);
+
+		model.addAttribute("posts", postService.getPostsByForumSlug(forumSlug, searchCriteria));
+		model.addAttribute("forum", forum);
+		model.addAttribute("pageMaker", new Page(searchCriteria, postService.getTotalPostsCountByForumNumber(forum.getNumber())));
 		
 		return "posts/postList";
 	}
 	
-	@RequestMapping(value="/{forumSlug}/{postNumber}")
-	public String getPost(@PathVariable(name="forumSlug") String forumSlug, @PathVariable(name="postNumber") Long postNumber, Model model) {
+	@RequestMapping(value="/{forumSlug}/{postNumber}", method=RequestMethod.GET)
+	public String getPost(@PathVariable(name="forumSlug") String forumSlug, @PathVariable(name="postNumber") Long postNumber, SearchCriteria searchCriteria, Model model) {
 		
 		log.info("PostController get post.............");
 		
-		PageVO page = new PageVO();
-		page.setNumber(1L);
-		page.setSize(10L);
+		ForumVO forum = forumService.getForumByForumSlug(forumSlug);
 		
 		model.addAttribute("selectedPost", postService.getPostByPostNumber(postNumber));
-		model.addAttribute("forum", forumService.getForumByForumSlug(forumSlug));
-		model.addAttribute("posts", postService.getPostsByForumSlug(forumSlug, page));
+		model.addAttribute("forum", forum);
+		model.addAttribute("posts", postService.getPostsByForumSlug(forumSlug, searchCriteria));
+		model.addAttribute("pageMaker", new Page(searchCriteria, postService.getTotalPostsCountByForumNumber(forum.getNumber())));
 		
 		return "posts/postPage";
 	}
 	
+	@RequestMapping(value="/{forumSlug}/{postNumber}/modification", method=RequestMethod.GET)
+	public String getPostModificationForm(@PathVariable("forumSlug") String forumSlug, @PathVariable("postNumber") Long postNumber, Model model) {
+		
+		log.info("PostController get post modification form");
+		
+		model.addAttribute("forum", forumService.getForumByForumSlug(forumSlug));
+		model.addAttribute("post", postService.getPostByPostNumber(postNumber));
+		return "posts/postModificationForm";
+	}
+	
 	@RequestMapping(value="/{forumSlug}/registration", method=RequestMethod.GET)
-	public String getPostRegistrationForm() {
+	public String getPostRegistrationForm(@PathVariable("forumSlug") String forumSlug, Model model) {
 		
 		log.info("PostController get register form.............");
 		
+		model.addAttribute("forum", forumService.getForumByForumSlug(forumSlug));
 		return "posts/postRegistrationForm";
 	}
+	
+	
+	
+	
 	
 	@RequestMapping(value="/{forumSlug}", method=RequestMethod.POST)
 	public String postPostRegistrationForm(@PathVariable("forumSlug") String forumSlug, PostVO post, RedirectAttributes rttr) {
@@ -75,14 +90,16 @@ public class PostController {
 		post.setForumNumber(forumService.getForumByForumSlug(forumSlug).getNumber());
 		postService.registerPost(post);
 		
+		rttr.addFlashAttribute("resultMessage", "새 글이 등록되었습니다.");
 		
 		StringBuilder redirectUri = new StringBuilder();
-		redirectUri.append("redirect:/")
+		redirectUri
+			.append("redirect:/posts/")
 			.append(forumSlug);
 		
 		return redirectUri.toString();
 	}
-	
+
 	@RequestMapping(value="/{forumSlug}/{postNumber}", method=RequestMethod.PATCH)
 	public String patchPost(@PathVariable("forumSlug") String forumSlug, PostVO post) {
 		
@@ -91,7 +108,8 @@ public class PostController {
 		postService.modifyPost(post);
 		
 		StringBuilder redirectUri = new StringBuilder();
-		redirectUri.append("redirect:/")
+		redirectUri
+			.append("redirect:/posts/")
 			.append(forumSlug)
 			.append("/")
 			.append(post.getNumber());
@@ -100,14 +118,16 @@ public class PostController {
 	}
 	
 	@RequestMapping(value="/{forumSlug}/{postNumber}", method=RequestMethod.DELETE)
-	public String deletePost(@PathVariable("forumSlug") String forumSlug, @PathVariable("postNumber") Long postNumber) {
+	public String deletePost(@PathVariable("forumSlug") String forumSlug, @PathVariable("postNumber") Long postNumber, RedirectAttributes rttr) {
 		
 		log.info("PostController delete post.............");
 		
 		postService.deletePostByPostNumber(postNumber);
 		
+		
 		StringBuilder redirectUri = new StringBuilder();
-		redirectUri.append("redirect:/")
+		redirectUri
+			.append("redirect:/posts/")
 			.append(forumSlug);
 		
 		return redirectUri.toString();

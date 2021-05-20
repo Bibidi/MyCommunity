@@ -43,10 +43,19 @@
 							<button class="btn-dislike btn btn-default">싫어요 0</button>
 						</div>
 						<div class="btns-post" style="padding:5px">
-							<a class="btn btn-default" href="/posts/${forum.slug}">전체글</a> 
-							<a class="btn btn-default" href="#">개념글</a>
+							<div class="btns-post-left" style="display:inline">
+								<a class="btn btn-default" href="/posts/${forum.slug}">전체글</a> 
+								<a class="btn btn-default" href="#">개념글</a>
+							</div>
+							
 							<sec:authorize access="isAuthenticated()">
-								<a class="btn btn-default pull-right" href="/posts/${forum.slug}/registration">글쓰기</a>
+								<div class="btns-post--right pull-right" style="display:inline">
+									<c:if test="${principal.user.nickname == post.writer }">
+										<a class="btn btn-default" href="/posts/${forum.slug}/${selectedPost.number}/modification">수정</a>
+										<a class="btn btn-default">삭제</a>
+									</c:if>
+									<a class="btn btn-default" href="/posts/${forum.slug}/registration">글쓰기</a>
+								</div>
 							</sec:authorize>
 						</div>
 					</div>
@@ -74,8 +83,7 @@
 								<c:forEach items="${posts}" var="post">
 									<tr>
 										<td><c:out value="${post.number}" /></td>
-										<td><a href="/posts/${forum.slug}/${post.number}"><c:out
-													value="${post.title}" /></a></td>
+										<td><a href="/posts/${forum.slug}/${post.number}"><c:out value="${post.title}" /></a></td>
 										<td><c:out value="${post.writer}" /></td>
 										<td><fmt:formatDate pattern="yyyy-MM-dd"
 												value="${post.datePosted}" /></td>

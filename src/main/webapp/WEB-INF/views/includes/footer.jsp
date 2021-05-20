@@ -1,6 +1,4 @@
 
-    <!-- jQuery -->
-    <script src="/resources/vendor/jquery/jquery-3.6.0.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/resources/vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -16,11 +14,6 @@
     <!-- Custom Theme JavaScript -->
     <script src="/resources/dist/js/sb-admin-2.js"></script>
 
-    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-    <script>
-    $(document).ready(function() {
-    });
-    </script>
 
 </body>
 

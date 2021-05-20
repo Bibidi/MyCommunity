@@ -31,16 +31,26 @@
 	
 	<select id="readPostsByForumNumber" resultMap="postMap">
 		<![CDATA[
-			SELECT * FROM 
-			(
-				SELECT post_number, post_title, user_nickname, date_posted, post_views_count
-				FROM posts
-				INNER JOIN users ON post_writer = user_number
-				WHERE forum_number = #{forumNumber}
-				ORDER BY post_number DESC
-			)
-			WHERE (#{from} <= ROWNUM AND ROWNUM <= #{to})
+			SELECT post_number, post_title, user_nickname, date_posted, post_views_count 
+			FROM
+				(SELECT ROWNUM rn, post_number, post_title, user_nickname, date_posted, post_views_count 
+				FROM 
+					(
+						SELECT post_number, post_title, user_nickname, date_posted, post_views_count
+						FROM posts
+						INNER JOIN users ON post_writer = user_number
+						WHERE forum_number = #{forumNumber}
+						ORDER BY post_number DESC
+					)
+				WHERE ROWNUM <= #{to}
+				)
+			WHERE rn >= #{from}
 		]]>
+	</select>
+	
+	<select id="readTotalPostsCountByForumNumber" resultType="long">
+		SELECT count(*) FROM posts
+		WHERE forum_number = #{forumNumber}
 	</select>
 	
 	<update id="updatePost">

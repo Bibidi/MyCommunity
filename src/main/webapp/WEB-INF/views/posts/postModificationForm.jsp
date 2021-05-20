@@ -29,16 +29,17 @@
 					<div class="panel-heading">글쓰기</div>
 					<div class="panel-body">
 						
-						<form role="form" action="/posts/${forum.slug}" method="post">
+						<form role="form" action="/posts/${forum.slug}/${post.number}" method="patch">
 							<div class="form-group" >
 								<label>제목</label>
-								<input class="form-control" name="title">
+								<input class="form-control" name="title" value="${post.title}">
 							</div>
 							
 							<div class="form-group" >
-								<textarea class="form-control" name="content" rows="10"></textarea>
+								<textarea class="form-control" name="content" rows="10"><c:out value="${post.content}"/></textarea>
 							</div>
 							
+							<input type="hidden" name="number" value="${post.number }" />
 							<input type="hidden" name="writer" value="<sec:authentication property="principal.user.nickname"/>">
 							<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token}" />
 							

@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bibidi.domain.PageVO;
+import com.bibidi.domain.Page;
 import com.bibidi.domain.PostVO;
+import com.bibidi.domain.SearchCriteria;
 import com.bibidi.mapper.ForumMapper;
 import com.bibidi.mapper.PostMapper;
 import com.bibidi.mapper.UserMapper;
@@ -52,15 +53,26 @@ public class PostServiceImpl implements PostService{
 	}
 
 	@Override
-	public List<PostVO> getPostsByForumSlug(String forumSlug, PageVO page) {
+	public List<PostVO> getPostsByForumSlug(String forumSlug, SearchCriteria searchCriteria) {
 		
 		log.info("get posts by forum slug..............");
 		Long forumNumber = ForumMapper.readForumByForumSlug(forumSlug).getNumber();
 		
-		Long to = page.getNumber() * page.getSize();
-		Long from = to - page.getSize() + 1;
+		Long to = searchCriteria.getPageNumber() * searchCriteria.getContentQuantity();
+		Long from = to - searchCriteria.getContentQuantity() + 1;
+		
+		log.info(from);
+		log.info(to);
 		
 		return postMapper.readPostsByForumNumber(forumNumber, from, to);
+	}
+	
+	@Override
+	public long getTotalPostsCountByForumNumber(Long forumNumber) {
+		
+		log.info("get total posts count by forum number..................");
+		
+		return postMapper.readTotalPostsCountByForumNumber(forumNumber);
 	}
 
 	@Override

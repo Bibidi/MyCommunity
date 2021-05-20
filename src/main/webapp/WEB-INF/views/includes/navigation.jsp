@@ -26,9 +26,9 @@
 			data-toggle="dropdown" href="#">게시판 메뉴1 <i class="fa fa-caret-down"></i>
 		</a>
 			<ul class="dropdown-menu dropdown-user">
-				<li><a href="#"> 게시판1</a></li>
-				<li><a href="#"> 게시판2</a></li>
+				<li><a href="/posts/notice"> 전체공지</a></li>
 				<li class="divider"></li>
+				<li><a href="/posts/library_buksam"> 북삼도서관</a></li>
 				<li><a href="#"> 게시판3</a></li>
 			</ul> <!-- /.dropdown-user -->
 		<!-- /.dropdown -->

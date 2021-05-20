@@ -49,6 +49,12 @@ public class PostMapperTests {
 	}
 	
 	@Test
+	public void testReadTotalPostsCountByForumNumber() {
+		
+		log.info("THE TOTAL COUNT OF POSTS : " + postMapper.readTotalPostsCountByForumNumber(1L));
+	}
+	
+	@Test
 	public void testUpdatePost() {
 		PostVO post = new PostVO();
 		post.setNumber(1L);

@@ -2,8 +2,8 @@ package com.bibidi.service;
 
 import java.util.List;
 
-import com.bibidi.domain.PageVO;
 import com.bibidi.domain.PostVO;
+import com.bibidi.domain.SearchCriteria;
 
 public interface PostService {
 
@@ -11,7 +11,9 @@ public interface PostService {
 	
 	public PostVO getPostByPostNumber(Long postNumber);
 	
-	public List<PostVO> getPostsByForumSlug(String forumSlug, PageVO page);
+	public List<PostVO> getPostsByForumSlug(String forumSlug, SearchCriteria searchCriteria);
+	
+	public long getTotalPostsCountByForumNumber(Long forumNumber);
 	
 	public int modifyPost(PostVO post);
 	

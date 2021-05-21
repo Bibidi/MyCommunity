@@ -31,12 +31,13 @@ public class Page {
 		endPage = (currentPage + pageSize - 1) / pageSize * pageSize;
 		startPage = endPage - pageSize + 1;
 		
-		// 실제 페이지
+		// endPage는 현재 표시하는 페이지 중 마지막 페이지. lastPage는 실제 마지막 페이지를 의미
 		long contentQuantity = searchCriteria.getContentQuantity();
-		endPage = Math.min(endPage, (totalQuantity + contentQuantity - 1) / contentQuantity);
+		long lastPage = (totalQuantity + contentQuantity - 1) / contentQuantity;
+		endPage = Math.min(endPage, lastPage);
 		
-		this.hasPrevPage = currentPage > 1;
-		this.hasNextPage = currentPage < endPage;
+		this.hasPrevPage = startPage > 1;
+		this.hasNextPage = endPage < lastPage;
 	}
 	
 }

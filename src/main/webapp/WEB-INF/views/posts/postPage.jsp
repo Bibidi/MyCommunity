@@ -82,8 +82,8 @@
 							<tbody>
 								<c:forEach items="${posts}" var="post">
 									<tr>
-										<td><c:out value="${post.number}" /></td>
-										<td><a href="/posts/${forum.slug}/${post.number}"><c:out value="${post.title}" /></a></td>
+										<td><c:out value="${post.number}" /><c:if test="${selectedPost.number == post.number }"> 현재</c:if></td>
+										<td><a href="/posts/${forum.slug}/${post.number}?pageNumber=${pageMaker.searchCriteria.pageNumber}"><c:out value="${post.title}" /></a></td>
 										<td><c:out value="${post.writer}" /></td>
 										<td><fmt:formatDate pattern="yyyy-MM-dd"
 												value="${post.datePosted}" /></td>
@@ -93,6 +93,21 @@
 							</tbody>
 						</table>
 						<!-- /.table-responsive -->
+						
+						<div class="pagination-wrapper" style="text-align:center">
+								<ul class="pagination">
+									<c:if test="${pageMaker.hasPrevPage}">
+										<li class="paginate_button previous"><a href="/posts/${forum.slug}?pageNumber=${pageMaker.searchCriteria.pageNumber - 1}">이전</a></li>
+									</c:if>
+									<c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+										<li class="paginate_button ${pageMaker.searchCriteria.pageNumber == num ? "active" : "" }"><a href="/posts/${forum.slug}?pageNumber=${num}">${num}</a></li>
+									</c:forEach>
+									
+									<c:if test="${pageMaker.hasNextPage }">
+										<li class="paginate_button next"><a href="/posts/${forum.slug}?pageNumber=${pageMaker.searchCriteria.pageNumber + 1}">다음</a></li>
+									</c:if>
+								</ul>
+							</div>
 					</div>
 					<!-- /.panel-body -->
 				</div>

@@ -52,7 +52,7 @@
 									<c:forEach items="${posts}" var="post">
 										<tr>
 											<td><c:out value="${post.number}" /></td>
-											<td><a href="/posts/${forum.slug}/${post.number}"><c:out
+											<td><a href="/posts/${forum.slug}/${post.number}?pageNumber=${pageMaker.searchCriteria.pageNumber}"><c:out
 														value="${post.title}" /></a></td>
 											<td><c:out value="${post.writer}" /></td>
 											<td><fmt:formatDate pattern="yyyy-MM-dd"
@@ -75,16 +75,20 @@
 							<div class="pagination-wrapper" style="text-align:center">
 								<ul class="pagination">
 									<c:if test="${pageMaker.hasPrevPage}">
-										<li class="paginate_button previous"><a href="/posts/${forum.slug}?pageNumber=${pageMaker.searchCriteria.pageNumber - 1}">이전</a></li>
+										<li class="paginate_button previous"><a href="${pageMaker.startPage - 1}">이전</a></li>
 									</c:if>
 									<c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-										<li class="paginate_button ${pageMaker.searchCriteria.pageNumber == num ? "active" : "" }"><a href="/posts/${forum.slug}?pageNumber=${num}">${num}</a></li>
+										<li class="paginate_button ${pageMaker.searchCriteria.pageNumber == num ? "active" : "" }"><a href="${num}">${num}</a></li>
 									</c:forEach>
 									
 									<c:if test="${pageMaker.hasNextPage }">
-										<li class="paginate_button next"><a href="/posts/${forum.slug}?pageNumber=${pageMaker.searchCriteria.pageNumber + 1}">다음</a></li>
+										<li class="paginate_button next"><a href="${pageMaker.endPage + 1}">다음</a></li>
 									</c:if>
 								</ul>
+								
+								<form id="paginationForm" action="/posts/${forum.slug}" method="get">
+									<input type="hidden" name="pageNumber" value="${pageMaker.searchCriteria.pageNumber }" />
+								</form>
 							</div>
 						</div>
 						<!-- /.panel-body -->
@@ -136,6 +140,7 @@
 		$(document).ready(function() {
 			
 			notifyResult();
+			addPaginationEvent();
 			
 			function notifyResult() {
 				
@@ -147,50 +152,21 @@
 				$("#myModal").modal("show");
 			}
 			
-			// 나중에 json으로 데이터 받는 부분 구현하고나서 구현할 것
-			function addPagenation() {
+			function addPaginationEvent() {
 				
-				const pageMaker = '<c:out value="${pageMaker}"/>';
-				const forum = '<c:out value="${forum}"/>';
-				const pageUl = document.getElementsByClassName("pagination")[0];
+				const paginationForm = document.getElementById("paginationForm");
+				const paginateBtns = document.getElementsByClassName("paginate_button");
 				
-				console.log(pageMaker);
-				console.log(forum);
-				console.log(pageUl);
-				
-				console.log(pageMaker.startPage);
-				console.log(forum[0]);
-				
-				let innerStr = "";
-				
-				if (pageMaker.hasPrevPage) {
-					innerStr += '<li class="paginate_button previous"><a href="' 
-									+ (pagemaker.startPage - 1)
-									+ '">이전</a></li>';
-					console.log("hasPrevePage");
-				}
-				
-				for (let num = pageMaker.startPage; num <= pageMaker.endPage; i++) {
-					innerStr += '<li class="paginate_button ';
-					if (pageMaker.searchCriteria.pageNumber === num) {
-						innserStr += 'active';
+				for (let i = 0; i < paginateBtns.length; i++) {
+					const aTag = paginateBtns[i].getElementsByTagName("a");
+					aTag[0].onclick = function(e) {
+						e.preventDefault();
+						
+						const inputPageNumber = document.getElementsByName("pageNumber")[0];
+						inputPageNumber.setAttribute("value", aTag[0].getAttribute("href"));
+						paginationForm.submit();
 					}
-					innerStr += '}"><a href="'
-								+ '/posts/' + forum.slug + '?pageNumber=' + pageMaker.pageNumber
-								+ '">'
-								+ num
-								+ '</a></li>';
-					console.log("number : " + num);
 				}
-				
-				if (pageMaker.hasNextPage) {
-					innerStr += '<li class="paginate_button next"><a href="'
-								+ (pageMaker.endPage + 1)
-								+ '">다음</a></li>';
-					console.log("hasNextPage");
-				}
-				innerStr += "<li>haha</li>"
-				pageUl.innerHTML = innerStr;
 			}
 		});
 	</script>

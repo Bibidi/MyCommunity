@@ -15,32 +15,68 @@
 	</resultMap>
 	
 	<insert id="insertComment">
+		<selectKey keyProperty="number" order="BEFORE" resultType="Long">
+			SELECT seq_comment.nextval FROM dual
+		</selectKey>
+	
 		INSERT INTO comments
 			(comment_number, post_number, comment_parent_number, comment_content, comment_writer)
 		VALUES
-			(#{number}, #{postNumber}, #{parentNumber}, #{content},
-			(SELECT user_number FROM users WHERE user_nickname = #{comment_writer}))
+			(#{number}, #{postNumber}, #{number}, #{content},
+			(SELECT user_number FROM users WHERE user_nickname = #{writer}))
 	</insert>
 	
-	<select id="readCommentsByPostNubmer" resultMap="commentMap">
+	<insert id="insertReplyComment">
+		INSERT INTO comments
+			(comment_number, post_number, comment_parent_number, comment_content, comment_writer)
+		VALUES
+			(seq_comment.nextval, #{postNumber}, #{parentNumber}, #{content},
+			(SELECT user_number FROM users WHERE user_nickname = #{writer}))
+	</insert>
+	
+	<select id="readCommentsByPostNumber" resultMap="commentMap">
 		<![CDATA[
-			SELECT * FROM 
-				(
-					SELECT * FROM comments
-					WHERE post_nubmer = #{postNumber}
-					ORDER BY comment_parent_number DESC, comment_number ASC
+		SELECT comment_number, post_number, comment_parent_number, comment_content, user_nickname, date_commented, date_comment_modified, comment_is_deleted
+		FROM
+			(SELECT comment_number, post_number, comment_parent_number, comment_content, user_nickname, date_commented, date_comment_modified, comment_is_deleted 
+			FROM
+				(SELECT ROWNUM rn, comment_number, post_number, comment_parent_number, comment_content, user_nickname, date_commented, date_comment_modified, comment_is_deleted
+				FROM 
+					(SELECT comment_number, post_number, comment_parent_number, comment_content, user_nickname, date_commented, date_comment_modified, comment_is_deleted
+					FROM comments
+					INNER JOIN users ON comment_writer = user_number
+					WHERE post_number = #{postNumber}
+					ORDER BY comment_parent_number DESC, comment_number DESC
+					)
+				WHERE ROWNUM <= #{to}
 				)
-			WHERE (#{from} <= ROWNUM AND ROWNUM <= #{to})
-			ORDER BY comment_parent_number ASC, comment_number ASC
+			WHERE rn >= #{from}
+			)
+		ORDER BY comment_parent_number ASC, comment_number ASC
 		]]>
+	</select>
+	
+	<select id="readCommentsCountByPostNumber" resultType="int">
+		SELECT count(*)FROM comments
+		WHERE post_number = #{postNumber}
+	</select>
+	
+	<select id="readCommentsCountByParentCommentNumber" resultType="int">
+		SELECT count(*) FROM comments
+		WHERE comment_parent_number = #{parentCommentNumber}
 	</select>
 	
 	<update id="updateComment">
 		UPDATE comments SET
-			(
-				comment_content = #{content},
-				date_comment_modified = sysdate
-			)
+			comment_content = #{content},
+			date_comment_modified = sysdate
+		WHERE comment_number = ${number}
+	</update>
+	
+	<update id="updateCommentIsDeletedByCommentNumber">
+		UPDATE comments SET
+			comment_is_deleted = '1'
+		WHERE comment_number = #{commentNumber}
 	</update>
 	
 	<delete id="deleteCommentByCommentNumber">

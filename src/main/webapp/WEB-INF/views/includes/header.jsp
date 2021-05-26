@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 
@@ -7,6 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrfHeaderName" content="${_csrf.headerName}">
+    <meta name="csrfTokenValue" content="${_csrf.token}">
+    <sec:authorize access="isAuthenticated()">
+    	<meta name="userNickname" content="<sec:authentication property='principal.user.nickname'/>">
+    </sec:authorize>
 
     <title>SB Admin 2 - Bootstrap Admin Theme</title>
 
@@ -15,12 +21,6 @@
 
     <!-- MetisMenu CSS -->
     <link href="/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-
-    <!-- DataTables CSS -->
-    <link href="/resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
-
-    <!-- DataTables Responsive CSS -->
-    <link href="/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="/resources/dist/css/sb-admin-2.css" rel="stylesheet">

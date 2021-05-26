@@ -37,7 +37,7 @@ public class PostServiceImpl implements PostService{
 		
 		int result = postMapper.insertPost(post);
 		if (result > 0) {
-			result = userMapper.increaseUserActivityScoreByUserNickname(post.getWriter(), SCORE);
+			userMapper.increaseUserActivityScoreByUserNickname(post.getWriter(), SCORE);
 		}
 		
 		return result;
@@ -60,9 +60,6 @@ public class PostServiceImpl implements PostService{
 		
 		Long to = searchCriteria.getPageNumber() * searchCriteria.getContentQuantity();
 		Long from = to - searchCriteria.getContentQuantity() + 1;
-		
-		log.info(from);
-		log.info(to);
 		
 		return postMapper.readPostsByForumNumber(forumNumber, from, to);
 	}

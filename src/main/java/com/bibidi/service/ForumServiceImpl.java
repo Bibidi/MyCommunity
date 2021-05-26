@@ -32,10 +32,10 @@ public class ForumServiceImpl implements ForumService {
 		if (result > 0) {
 			RoleVO role = new RoleVO();
 			role.setName("ROLE_ADMIN_" + forum.getSlug().toUpperCase());
-			result *= roleMapper.insertRole(role);
+			roleMapper.insertRole(role);
 			
 			role.setName("ROLE_MANAGER_" + forum.getSlug().toUpperCase());
-			result *= roleMapper.insertRole(role);
+			roleMapper.insertRole(role);
 		}
 		
 		return result;
@@ -76,8 +76,8 @@ public class ForumServiceImpl implements ForumService {
 					.getSlug()
 					.toUpperCase();
 			
-			result *= roleMapper.deleteRoleByRoleName("ROLE_ADMIN_" + slug);
-			result *= roleMapper.deleteRoleByRoleName("ROLE_MANAGER_" + slug);
+			roleMapper.deleteRoleByRoleName("ROLE_ADMIN_" + slug);
+			roleMapper.deleteRoleByRoleName("ROLE_MANAGER_" + slug);
 		}
 		return result;
 	}

@@ -10,9 +10,17 @@ public interface CommentMapper {
 
 	public int insertComment(CommentVO comment);
 	
-	public List<CommentVO> readCommnetsByPostNumber(@Param("postNumber") Long postNumber, @Param("from") Long from, @Param("to") Long to);
+	public int insertReplyComment(CommentVO comment);
 	
-	public int updateCommnet(CommentVO comment);
+	public List<CommentVO> readCommentsByPostNumber(@Param("postNumber") Long postNumber, @Param("from") Long from, @Param("to") Long to);
+	
+	public int readCommentsCountByPostNumber(Long postNumber);
+	
+	public int readCommentsCountByParentCommentNumber(Long parentCommentNumber);
+	
+	public int updateComment(CommentVO comment);
+	
+	public int updateCommentIsDeletedByCommentNumber(@Param("commentNumber") Long commentNumber);
 	
 	public int deleteCommentByCommentNumber(Long commentNumber);
 }

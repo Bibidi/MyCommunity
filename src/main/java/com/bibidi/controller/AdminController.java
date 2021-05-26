@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bibidi.domain.ForumVO;
-import com.bibidi.mapper.ForumMapper;
 import com.bibidi.service.ForumService;
 
 import lombok.Setter;

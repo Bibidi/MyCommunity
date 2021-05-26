@@ -10,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bibidi.domain.UserVO;
-import com.bibidi.mapper.RoleMapper;
 import com.bibidi.mapper.UserRoleMapper;
 
 import lombok.Setter;

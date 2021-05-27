@@ -1,9 +1,13 @@
 package com.bibidi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -100,36 +104,34 @@ public class PostController {
 		return redirectUri.toString();
 	}
 
-	@RequestMapping(value="/{forumSlug}/{postNumber}", method=RequestMethod.PATCH)
-	public String patchPost(@PathVariable("forumSlug") String forumSlug, PostVO post) {
+	@RequestMapping(
+			value = "/{forumSlug}/{postNumber}", 
+			method = RequestMethod.PATCH,
+			consumes = "application/json",
+			produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> patchPost(@RequestBody PostVO post) {
 		
 		log.info("PostController patch post.............");
 		
-		postService.modifyPost(post);
+		int patchedPostsCount = postService.modifyPost(post);
 		
-		StringBuilder redirectUri = new StringBuilder();
-		redirectUri
-			.append("redirect:/posts/")
-			.append(forumSlug)
-			.append("/")
-			.append(post.getNumber());
-		
-		return redirectUri.toString();
+		return patchedPostsCount > 0 
+				? new ResponseEntity<String>("success", HttpStatus.OK) 
+				: new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@RequestMapping(value="/{forumSlug}/{postNumber}", method=RequestMethod.DELETE)
-	public String deletePost(@PathVariable("forumSlug") String forumSlug, @PathVariable("postNumber") Long postNumber, RedirectAttributes rttr) {
+	@RequestMapping(
+			value = "/{forumSlug}/{postNumber}", 
+			method = RequestMethod.DELETE,
+			produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> deletePost(@PathVariable("postNumber") Long postNumber) {
 		
 		log.info("PostController delete post.............");
 		
-		postService.deletePostByPostNumber(postNumber);
+		int deletedPostsCount = postService.deletePostByPostNumber(postNumber);
 		
-		
-		StringBuilder redirectUri = new StringBuilder();
-		redirectUri
-			.append("redirect:/posts/")
-			.append(forumSlug);
-		
-		return redirectUri.toString();
+		return deletedPostsCount > 0 
+				? new ResponseEntity<String>("success", HttpStatus.OK) 
+				: new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

@@ -58,7 +58,7 @@
 										</div>
 										<div class="header--right pull-right" style="display:inline">
 											<time>2018-01-01 13:13 </time>
-											<a>삭제 </a>
+											<a href='#'>삭제 </a>
 											<a href='#'>수정 </a>
 											<a href='#'>답글</a>
 										</div>
@@ -94,8 +94,8 @@
 							<sec:authorize access="isAuthenticated()">
 								<div class="btns-post--right pull-right" style="display:inline">
 									<c:if test="${principal.user.nickname == post.writer }">
-										<a class="btn btn-default" href="/posts/${forum.slug}/${selectedPost.number}/modification">수정</a>
-										<a class="btn btn-default">삭제</a>
+										<a class="post-edit-link btn btn-default" href="/posts/${forum.slug}/${selectedPost.number}/modification">수정</a>
+										<a class="post-delete-link btn btn-default">삭제</a>
 									</c:if>
 									<a class="btn btn-default" href="/posts/${forum.slug}/registration">글쓰기</a>
 								</div>
@@ -171,26 +171,31 @@
 	</div>
 	<!-- /#wrapper -->
 	
+	<script type="text/javascript" src="/resources/js/post.js"></script>
 	<script type="text/javascript" src="/resources/js/comment.js"></script>
 	
 	<script>
 		$(document).ready(function() {
 			
-			const postNumber = '<c:out value="${selectedPost.number}"/>';
+			const urlTokens = location.pathname.split('/');
+			const forumSlug = urlTokens[2];
+			const postNumber = urlTokens[3];
 			const metaNickname = document.querySelector("meta[name='userNickname']");
 			const userNickname = !metaNickname ? "" : metaNickname.getAttribute("content");
 		
 			listComments(1);
 			registerBtnEvent();
 			
+			
 			function registerBtnEvent() {
 				const isLogin = userNickname == '' ? false : true;
-				console.log(isLogin);
 				
 				if (isLogin) {
+					
+					// 댓글 등록 버튼 이벤트 등록
 					const commentRegisterBtn = document.querySelector("#comment-register-btn");
 					
-					if (commentRegisterBtn != null) {
+					if (commentRegisterBtn !== null) {
 						commentRegisterBtn.addEventListener('click', function() {
 							const textArea = document.querySelector('#comment-register-content');
 							const content = textArea.value;
@@ -206,13 +211,34 @@
 								writer : userNickname
 							};
 							
-							console.log(comment);
-							
 							commentService.addComment(
 								comment,
 								function (msg) {
 									textArea.value = '';
 									listComments(1);
+								}
+							);
+						});
+					}
+					
+					
+					// 게시물 삭제 이벤트 등록
+					const postDeleteBtn = document.querySelector('.post-delete-link');
+					
+					if (postDeleteBtn !== null) {
+						const result = location.pathname.split('/');
+						
+						console.log(result);
+						console.log(postDeleteBtn);
+						
+						postDeleteBtn.addEventListener('click', function(event) {
+							event.preventDefault();
+							
+							postService.deletePost(
+								postNumber,
+								function(msg) {
+									alert("msg");
+									location.href = '/posts/' + forumSlug;
 								}
 							);
 						});
@@ -234,13 +260,15 @@
 						
 						if (!list || list.length == 0) {
 							commentUl.innerHTML = "";
+							registerCommentBtnEvent();
+							
 							return;
 						}
 						
 						let str = "";
 						list.forEach(item => {
 							if (item.number === item.parentNumber) {
-								str += "<li data-cno='" + item.number + "'>"
+								str += "<li>"
 									+ "<div class='comment-header'>"
 									+ "<div class='header--left' style='display:inline'>"
 									+ "<strong class='primary-font'>" + item.writer + "</strong>"
@@ -249,13 +277,13 @@
 									+ "<time>" + displayTime(item.dateCommented) + " </time>";
 								
 								if (item.writer === userNickname) {
-									str += "<a href='#'> 삭제 </a>"
-										+ "<a href='#'> 수정 </a>";
+									str += "<a class='comment-delete-link' href='#' data-target='" + item.number + "'> 삭제 </a>"
+										+ "<a class='comment-edit-link' href='#' data-target='" + item.number + "'> 수정 </a>";
 									
 								}
 								
 								if (userNickname != '') {
-									str += "<a href='#'> 답글 </a>";
+									str += "<a class='comment-reply-link' href='#' data-target='" + item.number + "'> 답글 </a>";
 								}
 								
 								str += "</div></div><div class='comment-body'>"
@@ -263,7 +291,7 @@
 									+ "</div></li>";
 							}
 							else {
-								str += "<li class='reply' data-cno='" + item.number + "'>"
+								str += "<li class='reply'>"
 									+ "<div class='comment-header'>"
 									+ "<div class='header--left' style='display:inline; padding-left:18px'>"
 									+ "<strong class='primary-font'>" + item.writer + "</strong>"
@@ -272,8 +300,8 @@
 									+ "<time>" + displayTime(item.dateCommented) + " </time>";
 								
 								if (item.writer === userNickname) {
-									str += "<a href='#'> 삭제 </a>"
-										+ "<a href='#'> 수정 </a>";
+									str += "<a class='comment-delete-link' href='#' data-target='" + item.number + "'> 삭제 </a>"
+										+ "<a class='comment-edit-link' href='#' data-target='" + item.number + "'> 수정 </a>";
 									}
 								
 								str	+= "</div></div><div class='comment-body'>"
@@ -283,8 +311,41 @@
 						});
 						
 						commentUl.innerHTML = str;
+						registerCommentBtnEvent();
 					}
 				);
+			}
+			
+			function registerCommentBtnEvent() {
+				const isLogin = userNickname == '' ? false : true;
+				
+				if (isLogin) {
+					
+					// 댓글 삭제 이벤트 등록
+					const commentDeleteBtns = document.querySelectorAll('.comment-delete-link');
+					
+					commentDeleteBtns.forEach(btn => {
+						const targetNumber = btn.dataset.target;
+						
+						btn.addEventListener("click", function(event) {
+							event.preventDefault();
+							
+							commentService.removeComment(
+								targetNumber,
+								function (msg) {
+									alert(msg);
+									listComments(1);
+								}
+							);
+						});
+					})
+					
+					// 댓글 수정 이벤트 등록
+					const commentEditBtns = document.querySelectorAll('.comment-edit-link');
+					
+					// 대댓글 등록 이벤트
+					const commentReplyBtns = document.querySelectorAll('.comment-reply-link');
+				}
 			}
 			
 			function displayTime(timeValue) {

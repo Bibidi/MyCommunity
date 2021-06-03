@@ -1,7 +1,5 @@
 package com.bibidi.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bibidi.domain.CommentPageDTO;
 import com.bibidi.domain.CommentVO;
 import com.bibidi.domain.SearchCriteria;
 import com.bibidi.service.CommentService;
@@ -50,12 +49,15 @@ public class CommentController {
 					MediaType.APPLICATION_PROBLEM_XML_VALUE,
 					MediaType.APPLICATION_JSON_VALUE }
 			)
-	public ResponseEntity<List<CommentVO>> getCommentsByPostNumber(@PathVariable("postNumber") Long postNumber, SearchCriteria searchCriteria) {
+	public ResponseEntity<CommentPageDTO> getCommentsByPostNumber(@PathVariable("postNumber") Long postNumber, SearchCriteria searchCriteria) {
 		
 		log.info("get comments by post number .........");
-		log.info(searchCriteria);
 		
-		return new ResponseEntity<List<CommentVO>>(commentService.getCommentsByPostNumber(postNumber, searchCriteria), HttpStatus.OK);
+		CommentPageDTO commentPage = new CommentPageDTO();
+		commentPage.setCommentsCount(commentService.getCommentsCountByPostNumber(postNumber));
+		commentPage.setComments(commentService.getCommentsByPostNumber(postNumber, searchCriteria));
+		
+		return new ResponseEntity<CommentPageDTO>(commentPage, HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -63,11 +65,10 @@ public class CommentController {
 			method = RequestMethod.PATCH,
 			consumes = "application/json",
 			produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> patchComment(@PathVariable("commentNumber") Long commentNumber, @RequestBody CommentVO comment) {
+	public ResponseEntity<String> patchComment(@RequestBody CommentVO comment) {
 		
 		log.info("patch comment ...................");
 		
-		comment.setNumber(commentNumber);
 		int modifiedCommentCount = commentService.modifyComment(comment);
 		
 		return modifiedCommentCount > 0 

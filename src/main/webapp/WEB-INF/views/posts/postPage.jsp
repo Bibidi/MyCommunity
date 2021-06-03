@@ -45,36 +45,28 @@
 							<button class="btn-dislike btn btn-default">싫어요 0</button>
 						</div>
 						
-						<div class="comments-view" style="padding:5px">
-							<div class="comments-header" style="padding:5px">
+						<div class="comments" style="padding:5px">
+							<div class="comments__header" style="padding:5px">
 								<i class="fa fa-comments fa-fw"></i> Comments
 							</div>
 							
-							<ul class="comments">
-								<li data-cno='39'>
-									<div class="header">
-										<div class="header--left" style="display:inline; padding-left:18px">
-											<strong class="primary-font">user00</strong>
-										</div>
-										<div class="header--right pull-right" style="display:inline">
-											<time>2018-01-01 13:13 </time>
-											<a href='#'>삭제 </a>
-											<a href='#'>수정 </a>
-											<a href='#'>답글</a>
-										</div>
-									</div>
-									<div class="body">
-										<p><i class="fa fa-angle-right fa-fw"></i>Good</p>
-									</div>
-								</li>
+							<ul class="comments__list">
 							</ul>
+							
+							<div class='comments__pagination' style='text-align:center'>
+								<ul class='pagination'>
+								</ul>
+							</div>
 						</div>
 						
 						<sec:authorize access="isAuthenticated()">
-							<div class="comments-register" style="margin-bottom:5px; padding:5px">
+							<div class="comments-register" style="margin-bottom:5px; padding:5px;">
 								<textarea id="comment-register-content" rows="5" style="width:100%"></textarea>
-								<div style="text-align:right">
-									<button id="comment-register-btn" class="btn btn-primary" style="display:inline">등록</button>
+								<div style='display:inline'>
+									<button class='emoticon-register-btn btn btn-default'>이모티콘</button>
+								</div>
+								<div class='pull-right' style="display:inline">
+									<button id="comment-register-btn" class="btn btn-primary">등록</button>
 								</div>
 							</div>
 						</sec:authorize>
@@ -142,7 +134,7 @@
 										<li class="paginate_button previous"><a href="/posts/${forum.slug}?pageNumber=${pageMaker.searchCriteria.pageNumber - 1}">이전</a></li>
 									</c:if>
 									<c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-										<li class="paginate_button ${pageMaker.searchCriteria.pageNumber == num ? "active" : "" }"><a href="/posts/${forum.slug}?pageNumber=${num}">${num}</a></li>
+										<li class="paginate_button ${pageMaker.searchCriteria.pageNumber == num ? 'active' : '' }"><a href="/posts/${forum.slug}?pageNumber=${num}">${num}</a></li>
 									</c:forEach>
 									
 									<c:if test="${pageMaker.hasNextPage }">
@@ -182,10 +174,11 @@
 			const postNumber = urlTokens[3];
 			const metaNickname = document.querySelector("meta[name='userNickname']");
 			const userNickname = !metaNickname ? "" : metaNickname.getAttribute("content");
-		
-			listComments(1);
-			registerBtnEvent();
 			
+			let commentCurrentPage = 1;
+		
+			registerBtnEvent();
+			listComments(commentCurrentPage);
 			
 			function registerBtnEvent() {
 				const isLogin = userNickname == '' ? false : true;
@@ -228,9 +221,6 @@
 					if (postDeleteBtn !== null) {
 						const result = location.pathname.split('/');
 						
-						console.log(result);
-						console.log(postDeleteBtn);
-						
 						postDeleteBtn.addEventListener('click', function(event) {
 							event.preventDefault();
 							
@@ -243,6 +233,32 @@
 							);
 						});
 					}
+					
+					// 이모티콘 창 띄우는 이벤트 등록
+					const emoticonRegisterBtn = document.querySelector('.emoticon-register-btn');
+					
+					if (emoticonRegisterBtn !== null) {
+						const commentRegisterDiv = emoticonRegisterBtn.parentNode.parentNode;
+						let emoticonDiv = null;
+						
+						emoticonRegisterBtn.addEventListener('click', function(event) {
+							
+							if (emoticonDiv == null) {
+								emoticonDiv = document.createElement('div');
+								emoticonDiv.setAttribute('class', 'emoticons');
+								
+								let str = "<div class='emoticons__tab'>tabs</div>"
+										+ "<div class='emoticons__imgs'>imgs</div>";
+								
+								emoticonDiv.innerHTML = str;
+								commentRegisterDiv.appendChild(emoticonDiv);
+							}
+							else {
+								emoticonDiv.remove();
+								emoticonDiv = null;
+							}
+						});
+					}
 				}
 			}
 			
@@ -252,11 +268,13 @@
 					postNumber : postNumber,
 					pageNumber : pageNumber
 				};
-				const commentUl = document.querySelector(".comments");
+				const commentUl = document.querySelector(".comments__list");
 				
 				commentService.getComments(
 					param,
-					function(list) {
+					function(page) {
+						const totalQuantity = page.commentsCount;
+						const list = page.comments;
 						
 						if (!list || list.length == 0) {
 							commentUl.innerHTML = "";
@@ -268,7 +286,25 @@
 						let str = "";
 						list.forEach(item => {
 							if (item.number === item.parentNumber) {
+								
+								if (item.isDeleted) {
+									const msgDeletedItem = "해당 댓글은 삭제되었습니다.";
+									
+									str += "<li>"
+										+ "<div class='comment-wrapper'>"
+										
+									if (userNickname != '') {
+										str += "<a class='comment-reply-link pull-right' href='#' data-target='" + item.number + "'> 답글 </a>";
+									}
+									str += "</div></div><div class='comment-body'>";
+									str += "<p>" + msgDeletedItem + "</p>";
+									str	+= "</div></div></li>";
+									
+									return;
+								}
+								
 								str += "<li>"
+									+ "<div class='comment-wrapper'>"
 									+ "<div class='comment-header'>"
 									+ "<div class='header--left' style='display:inline'>"
 									+ "<strong class='primary-font'>" + item.writer + "</strong>"
@@ -286,12 +322,12 @@
 									str += "<a class='comment-reply-link' href='#' data-target='" + item.number + "'> 답글 </a>";
 								}
 								
-								str += "</div></div><div class='comment-body'>"
-									+ "<p>" + item.content + "</p>"
-									+ "</div></li>";
+								str += "</div></div><div class='comment-body'>";
+								str += "<p>" + item.content + "</p>";
+								str	+= "</div></div></li>";
 							}
 							else {
-								str += "<li class='reply'>"
+								str += "<li>"
 									+ "<div class='comment-header'>"
 									+ "<div class='header--left' style='display:inline; padding-left:18px'>"
 									+ "<strong class='primary-font'>" + item.writer + "</strong>"
@@ -312,8 +348,52 @@
 						
 						commentUl.innerHTML = str;
 						registerCommentBtnEvent();
+						commentCurrentPage = pageNumber;
+						addCommentPagination(totalQuantity);
 					}
 				);
+			}
+			
+			function addCommentPagination(totalQuantity) {
+				
+				const contentQuantity = 20;
+				const pageSize = 5;
+				let endPage = Math.ceil(commentCurrentPage / pageSize) * pageSize;
+				const startPage = endPage - pageSize + 1;
+				let hasNextPage = true;
+				const hasPreviousPage = (startPage != 1);
+				
+				if (endPage * contentQuantity >= totalQuantity) {
+					hasNextPage = false;
+					endPage = Math.ceil(totalQuantity / contentQuantity);
+				}
+				
+				
+				let str = '';
+				if (hasPreviousPage) {
+					str += '<li class="paginate_button previous"><a href="' + (startPage - 1) + '">이전</a></li>';
+				}
+				
+				for (let i = startPage; i <= endPage; i++) {
+					str += '<li class="paginate_button"><a href="#">' + i + '</a></li>';
+				}
+				
+				if (hasNextPage) {
+					str += '<li class="paginate_button next"><a href="' + (endPage + 1) + '">다음</a></li>';
+				}
+				
+				const commentPaginationUl = document.querySelector('.comments__pagination').querySelector('.pagination');
+				commentPaginationUl.innerHTML = str;
+				
+				const commentItems = commentPaginationUl.querySelectorAll('.paginate_button');
+				commentItems.forEach(item => {
+					item.addEventListener('click', function(event) {
+						event.preventDefault();
+						
+						const targetNumber = this.querySelector('a').innerText;
+						listComments(targetNumber);
+					});
+				});
 			}
 			
 			function registerCommentBtnEvent() {
@@ -334,17 +414,117 @@
 								targetNumber,
 								function (msg) {
 									alert(msg);
-									listComments(1);
+									listComments(commentCurrentPage);
 								}
 							);
 						});
-					})
+					});
 					
 					// 댓글 수정 이벤트 등록
-					const commentEditBtns = document.querySelectorAll('.comment-edit-link');
+					const commentEditLinks = document.querySelectorAll('.comment-edit-link');
+					
+					commentEditLinks.forEach(link => {
+						let commentEditDiv = null;
+						
+						link.addEventListener("click", function(event) {
+							event.preventDefault();
+							const commentWrapper = this.parentNode.parentNode.parentNode;
+							const commentContent = commentWrapper.querySelector('.comment-body').innerText;
+							
+							if (commentEditDiv === null) {
+								const editDiv = document.createElement('div');
+								editDiv.setAttribute('class', 'comment-edit');
+								
+								let str = "<textarea class='comment-edit__content' rows='5'>" + commentContent + "</textarea>"
+										+ "<div class='btns-wrapper'>"
+										+ "<button class='comment-edit__submit-btn btn btn-primary'>수정</button>"
+										+ "</div>";
+										
+								editDiv.innerHTML = str;
+								commentWrapper.appendChild(editDiv);
+								commentEditDiv = editDiv;
+								
+								// 제출 버튼 이벤트 등록
+								const commentEditBtn = commentEditDiv.querySelector(".comment-edit__submit-btn");
+								const targetNumber = this.dataset.target;
+								
+								commentEditBtn.addEventListener('click', function() {
+									
+									comment = {
+										number : targetNumber,
+										content : commentEditDiv.querySelector(".comment-edit__content").value
+									};
+									
+									commentService.updateComment(
+										comment,
+										function(msg) {
+											alert(msg);
+											listComments(commentCurrentPage);
+										}	
+									);
+								});
+							}
+							else {
+								commentEditDiv.remove();
+								commentEditDiv = null;
+							}
+						});
+					});
 					
 					// 대댓글 등록 이벤트
-					const commentReplyBtns = document.querySelectorAll('.comment-reply-link');
+					const commentReplyLinks = document.querySelectorAll('.comment-reply-link');
+					
+					commentReplyLinks.forEach(link => {
+						let commentReplyDiv = null;
+						
+						link.addEventListener("click", function(event) {
+							event.preventDefault();
+							const commentWrapper = this.parentNode.parentNode.parentNode;
+							const commentContent = commentWrapper.querySelector('.comment-body').innerText;
+							
+							if (commentReplyDiv === null) {
+								const replyDiv = document.createElement('div');
+								replyDiv.setAttribute('class', 'comment-reply');
+								
+								let str = "<textarea class='comment-reply__content' rows='5'></textarea>"
+										+ "<div class='btns-wrapper'>"
+										+ "<button class='emoticon-register-btn btn btn-default'>이모티콘</button>"
+										+ "<button class='comment-reply__submit-btn btn btn-primary'>등록</button>"
+										+ "</div>";
+										
+										
+								replyDiv.innerHTML = str;
+								commentWrapper.appendChild(replyDiv);
+								commentReplyDiv = replyDiv;
+								
+								// 제출 버튼 이벤트 등록
+								const commentReplyBtn = commentReplyDiv.querySelector(".comment-reply__submit-btn");
+								const targetNumber = this.dataset.target;
+								
+								commentReplyBtn.addEventListener('click', function() {
+									
+									comment = {
+										postNumber : postNumber,
+										parentNumber : targetNumber,
+										content : commentReplyDiv.querySelector(".comment-reply__content").value,
+										writer : userNickname
+									};
+									
+									commentService.addComment(
+										comment,
+										function(msg) {
+											alert(msg);
+											listComments(commentCurrentPage);
+										}	
+									);
+								});
+							}
+							else {
+								commentReplyDiv.remove();
+								commentReplyDiv = null;
+							}
+						});
+					});
 				}
 			}
 			
@@ -362,6 +542,7 @@
 				
 				return YYYY + '-' + MM + '-' + DD + ' ' + HH + ':' + mm + ':' + ss;
 			}
+			
 		});
 	</script>
 

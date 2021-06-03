@@ -13,7 +13,6 @@ const commentService = (function() {
 	const fakePostNumber = 0;
 	
 	function addComment(comment, callback, error) {
-		console.log("reply........");
 		
 		$.ajax({
 			type : 'POST',

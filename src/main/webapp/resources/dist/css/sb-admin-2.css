@@ -157,11 +157,35 @@ body {
 .btn-danger.btn-outline:hover {
   color: white;
 }
+.comment-edit {
+	margin-bottom: 5px;
+	padding: 5px;
+}
+.comment-edit__content {
+	width: 100%;
+}
+.comment-reply {
+	margin-bottom: 5px;
+	padding: 5px;
+}
+.comment-reply__content {
+	width: 100%;
+}
+.comment-reply__submit-btn {
+	float: right;
+}
+
 .comments {
   margin: 0;
   padding: 0;
-  list-style: none;
 }
+.comments__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	padding-inline-start: 0;
+}
+
 .comments li {
   margin-bottom: 10px;
   padding-bottom: 5px;
@@ -176,6 +200,21 @@ body {
 .comments li .chat-body p {
   margin: 0;
 }
+.emoticons {
+	background-color:#808080;
+	width:400px;
+	height:200px;
+	position: relative;
+	top: 50px;
+	z-index:2;
+}
+.emoticons__tab {
+	height:1;
+}
+.emoticons__imgs {
+	height:1;
+}
+
 .panel .slidedown .glyphicon,
 .chat .glyphicon {
   margin-right: 5px;

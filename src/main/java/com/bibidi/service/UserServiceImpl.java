@@ -2,7 +2,6 @@ package com.bibidi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.bibidi.domain.UserRoleVO;
 import com.bibidi.domain.UserVO;

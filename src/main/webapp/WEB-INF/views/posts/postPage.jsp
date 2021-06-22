@@ -45,15 +45,15 @@
 							<button class="btn-dislike btn btn-default">싫어요 0</button>
 						</div>
 						
-						<div class="comments" style="padding:5px">
-							<div class="comments__header" style="padding:5px">
+						<div class="comments">
+							<div class="comments__header">
 								<i class="fa fa-comments fa-fw"></i> Comments
 							</div>
 							
 							<ul class="comments__list">
 							</ul>
 							
-							<div class='comments__pagination' style='text-align:center'>
+							<div class='comments__pagination'>
 								<ul class='pagination'>
 								</ul>
 							</div>

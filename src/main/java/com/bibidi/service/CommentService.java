@@ -17,3 +17,4 @@ public interface CommentService {
 	
 	public int deleteCommentByCommentNumber(Long commentNumber);
 }
+

@@ -13,7 +13,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">한글로 하면 깨지나?</h1>
+                    <h1 class="page-header">인기 게시물 리스트(미구현)</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
